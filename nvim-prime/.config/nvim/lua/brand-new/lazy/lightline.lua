@@ -1,3 +1,6 @@
+if true then
+    return {}
+end
 return {
     'itchyny/lightline.vim',
     lazy = false, -- also load at start since it's UI

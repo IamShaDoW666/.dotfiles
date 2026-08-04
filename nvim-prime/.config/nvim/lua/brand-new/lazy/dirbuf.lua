@@ -1,3 +1,5 @@
 return {
-    "elihunter173/dirbuf.nvim",
+    "shadowmkj/dirbuf.nvim"
+    -- "dirbuf",
+    -- dir = "/Users/milan/Documents/Desk/others/dirbuf.nvim"
 }

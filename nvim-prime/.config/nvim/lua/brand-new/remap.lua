@@ -57,6 +57,8 @@ vim.keymap.set("n", "<leader>ls", "<cmd>!leetrs submit %<CR>") -- submit to leet
 vim.keymap.set("n", "<leader>lt", "<cmd>!leetrs test %<CR>")   -- submit test to leetcode
 vim.keymap.set("n", "<leader>tt", "<cmd>:Themery<CR>")
 vim.keymap.set("n", "<leader>lr", "<cmd>:LiveRun<CR>")
+vim.keymap.set('n', '<leader>o', '<C-w>o', { desc = 'Close all windows except active' })
+
 
 -- Toggle Github Copilot
 -- vim.keymap.set("n", "<leader>cc", function()
@@ -86,3 +88,6 @@ vim.keymap.set("n", "<leader>'", function()
         print("Not inside tmux")
     end
 end, { desc = "Switch to tmux window 2 and run cargo r" })
+
+-- Simple Zoom
+vim.keymap.set('n', '<localleader>z', ':SimpleZoomToggle<CR>')

@@ -14,10 +14,12 @@ end
 
 starship init fish | source
 zoxide init --cmd cd fish | source
+if status is-interactive
+    atuin init fish | source
+end
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 fzf --fish | source
-atuin init fish | source
 
 set EDITOR nvim
 set -Ux MANPAGER "nvim +Man! -c 'set ft=man'"
@@ -54,6 +56,62 @@ alias bat="bat --theme='base16-256'"
 alias lc="leetrs"
 alias cg="cargo"
 
+# git aliases
+alias gs="git status"
+alias gd="git diff"
+alias gds="git diff --staged"
+alias gla="git log --oneline --graph --decorate --all"
+alias gl="git log --oneline --graph --decorate"
+alias gll="git log --stat"
+alias gsw="git switch"
+
+alias ga="git add"
+alias gaa="git add --all"
+alias gr="git restore"
+alias grs="git restore --staged"
+
+alias gc="git commit"
+alias gcm="git commit -m"
+alias gca="git commit --amend"
+alias gcan="git commit --amend --no-edit"
+
+alias gb="git branch"
+alias gba="git branch --all"
+alias gbd="git branch -d"
+alias gbD="git branch -D"
+
+alias gf="git fetch"
+alias gfa="git fetch --all --prune"
+alias gp="git pull"
+alias gP="git push"
+
+alias gst="git stash"
+alias gstp="git stash pop"
+alias gstl="git stash list"
+alias gundo="git reset --soft HEAD~1"
+
+function gop
+    set full_remote (git remote get-url origin)
+
+    if string match -q "https*" $full_remote
+        set user (echo $full_remote | awk -F'/' '{print $4}')
+        set repo (echo $full_remote | awk -F'/' '{print $5}' | sed 's/\.git$//')
+    else
+        set user (echo $full_remote | awk -F'[:/]' '{print $2}')
+        set repo (echo $full_remote | awk -F'[:/]' '{print $3}' | sed 's/\.git$//')
+    end
+
+    open "https://github.com/$user/$repo"
+end
+
+function gco --wraps "git switch"
+    git switch $argv
+end
+
+function gnew --wraps "git switch -c"
+    git switch -c $argv
+end
+
 
 # Yazi cd integration
 function y
@@ -63,10 +121,6 @@ function y
 		builtin cd -- "$cwd"
 	end
 	rm -f -- "$tmp"
-end
-
-function fish_user_key_bindings
-    bind \cf 'sh /Users/milan/scripts/tmux-sessionize; commandline -f repaint'
 end
 
 
@@ -97,6 +151,16 @@ function sudolast
     sudo (history --max=1)
 end
 
+bind \cr _atuin_bind_up
+bind -M insert \cr _atuin_bind_up
+
+bind ctrl-shift-t 'theme cycle'
+
+bind up up-or-search
+bind -M insert up up-or-search
+
+
+
 # Added by Antigravity
 fish_add_path /Users/milan/.antigravity/antigravity/bin
 
@@ -106,3 +170,26 @@ set -gx LUA_CPATH "$HOME/.luarocks/lib/lua/5.1/?.so;;"
 
 # Add LuaRocks binaries to your PATH
 fish_add_path $HOME/.luarocks/bin
+
+
+~/.local/bin/mise activate fish | source
+
+# pnpm
+set -gx PNPM_HOME "/Users/milan/Library/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end
+
+# Added by Antigravity IDE
+fish_add_path /Users/milan/.antigravity-ide/antigravity-ide/bin
+
+# Added by Antigravity IDE
+fish_add_path /Users/milan/.antigravity-ide/antigravity-ide/bin
+
+# opencode
+fish_add_path /Users/milan/.opencode/bin
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/Users/milan/.local/bin" $PATH

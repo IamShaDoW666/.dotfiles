@@ -10,6 +10,7 @@ return {
             local mason = require("mason")
             local mason_lspconfig = require("mason-lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local util = require("lspconfig.util")
 
             mason.setup()
             mason_lspconfig.setup({
@@ -36,9 +37,18 @@ return {
                             },
                         })
                     end,
+
                     rust_analyzer = function()
                         lspconfig.rust_analyzer.setup({
+                            capabilities = capabilities,
                             single_file_support = true,
+                            root_dir = function(fname)
+                                return require("lspconfig.util").root_pattern(
+                                        "Cargo.toml",
+                                        "rust-project.json"
+                                    )(fname)
+                                    or vim.fs.dirname(fname)
+                            end,
                             settings = {
                                 ["rust-analyzer"] = {
                                     cargo = { allFeatures = true },

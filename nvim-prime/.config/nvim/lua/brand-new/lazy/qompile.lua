@@ -1,3 +1,6 @@
+if true then
+    return {}
+end
 return {
     "qompile",
     dir = "~/Documents/Desk/Apps/qompile",
