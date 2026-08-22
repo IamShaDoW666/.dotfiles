@@ -4,11 +4,7 @@ local wezterm = require 'wezterm'
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
-config.debug_key_events = true
 config.enable_csi_u_key_encoding = true
-config.enable_kitty_keyboard = false
-
-
 -- or, changing the font size and color scheme.
 config.font_size = 22
 config.font = wezterm.font({
@@ -32,8 +28,8 @@ config.color_scheme = scheme
 -- config.use_fancy_tab_bar = true
 config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
-config.window_background_opacity = 0.9
-config.macos_window_background_blur = 20
+config.window_background_opacity = 0.8
+config.macos_window_background_blur = 15
 
 local act = wezterm.action
 

@@ -21,8 +21,10 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 fzf --fish | source
 
-set EDITOR nvim
+set -Ux EDITOR nvim
+set -Ux VISUAL nvim
 set -Ux MANPAGER "nvim +Man! -c 'set ft=man'"
+
 
 # Fish git prompt
 set __fish_git_prompt_showuntrackedfiles 'yes'
@@ -30,6 +32,9 @@ set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showstashstate ''
 set __fish_git_prompt_showupstream 'none'
 set -g fish_prompt_pwd_dir_length 3
+
+
+set -gx YAZI_ADAPTER kitty
 
 # Replace ls with eza
 alias ls='eza --icons --git'
@@ -55,13 +60,15 @@ alias tls="tmux list-sessions"
 alias bat="bat --theme='base16-256'"
 alias lc="leetrs"
 alias cg="cargo"
+alias agyc="agy -c"
 
 # git aliases
 alias gs="git status"
 alias gd="git diff"
 alias gds="git diff --staged"
 alias gla="git log --oneline --graph --decorate --all"
-alias gl="git log --oneline --graph --decorate"
+# alias gl="git log --oneline --graph --decorate"
+alias gl="serie"
 alias gll="git log --stat"
 alias gsw="git switch"
 
@@ -191,6 +198,46 @@ fish_add_path /Users/milan/.antigravity-ide/antigravity-ide/bin
 # opencode
 fish_add_path /Users/milan/.opencode/bin
 
+fish_add_path /Users/milan/development/flutter/bin
+
+
 
 # Added by Antigravity CLI installer
 set -gx PATH "/Users/milan/.local/bin" $PATH
+
+
+# ------------------------------------------------------------------------------
+# Optional: Fuzzy Tab Completion with fzf
+# Uncomment the function and bind statements below to enable fzf tab completion.
+# ------------------------------------------------------------------------------
+# function fzf-complete
+#     set -l cmd (commandline -c)
+#     test -z "$cmd"; and set cmd ""
+#     set -l current_token (commandline -ct)
+#
+#     # Generate completion list and pipe to fzf floating menu
+#     set -l completions (complete -C"$cmd")
+#     test -z "$completions"; and return
+#
+#     set -l result (printf "%s\n" $completions | fzf --height=40% --border=rounded --layout=reverse --delimiter=\t --query="$current_token" --select-1 --exit-0)
+#
+#     if test -n "$result"
+#         set -l val (string match -r "^[^\t]+" -- "$result")
+#         if test -n "$val"
+#             # Escape special characters while preserving leading ~ and $
+#             set -l escaped (string escape -n -- "$val" | string replace -r "^\x5C~" "~" | string replace -r "^\\\\\\\$" "\$\$")
+#             if string match -q "*/" -- "$val"
+#                 commandline -rt -- "$escaped"
+#             else
+#                 commandline -rt -- "$escaped "
+#             end
+#         end
+#     end
+#     commandline -f repaint
+# end
+#
+# # Bind Tab to open the fzf menu in both normal and insert modes
+# bind \t fzf-complete
+# bind -M insert \t fzf-complete
+#
+#

@@ -30,9 +30,9 @@ return {
         vim.api.nvim_create_autocmd("FileType", {
             callback = function(args)
                 -- Disable treesitter for rust if desired
-                if vim.bo[args.buf].filetype == "rust" then
-                    return
-                end
+                -- if vim.bo[args.buf].filetype == "rust" then
+                --     return
+                -- end
 
                 -- Try starting treesitter; if the parser isn't ready yet,
                 -- it won't crash your editor.

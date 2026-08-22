@@ -2,6 +2,7 @@ return {
     {
         "erikbackman/brightburn.vim",
     },
+    { "vague-theme/vague.nvim" },
     {
         "RRethy/base16-nvim",
         name = "New16",

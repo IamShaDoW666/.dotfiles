@@ -2,7 +2,7 @@
 hyper - b : open -na "Google Chrome"
 
 # Development
-hyper - 0x24 : open -a "WezTerm"
+hyper - 0x24 : open -a "Ghostty"
 
 # Communication
 hyper - d : open -a "Discord"
