@@ -94,6 +94,12 @@ function M.apply()
 
     -- ColorColumn naturally retains the active theme's dynamic background highlight!
 
+    -- Re-apply custom comment highlights so they are preserved after colorscheme reloads
+    local theme_ok, theme = pcall(require, "shadow.theme")
+    if theme_ok and theme.apply_comments then
+        theme.apply_comments()
+    end
+
     M.apply_lualine(is_transparent)
 end
 
