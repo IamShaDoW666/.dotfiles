@@ -149,9 +149,69 @@ function theme
 end
 
 function apps
-    set dirs (fd -t d -d 1 . ~/Documents/Desk/Apps | awk -F/ '{print $7}' | fzf)
+    set dirs (fd -t d -d 1 . ~/Documents/Desk/Apps ~/Documents/Desk/Learn ~/Documents/Desk/others | awk -F/ '{print $7}' | fzf)
     if test -n "$dirs"
         cd ~/Documents/Desk/Apps/$dirs
+    end
+end
+
+function tnew
+    set project (fd -t d -d 1 . ~/Documents/Desk/Apps ~/Documents/Desk/Learn ~/Documents/Desk/others | awk -F/ '{print $7}' | fzf)
+
+    if test -n "$project"
+        if tmux has-session -t "$project" 2>/dev/null
+            tmux attach-session -t "$project"
+        else
+            tmux new-session -s "$project"
+        end
+    end
+end
+
+function tnewc
+    set -l search_dirs ~/Documents/Desk/Apps ~/Documents/Desk/Learn ~/Documents/Desk/others
+    set -l all_paths (fd -t d -d 1 . $search_dirs | sed 's#/$##')
+    set -l project_name (printf '%s\n' $all_paths | path basename | choose)
+
+    if test -n "$project_name"
+        set -l project_path (printf '%s\n' $all_paths | grep -m1 -E "/$project_name\$")
+        # Replace dots with underscores because tmux parses dots as session:window separators
+        set -l session_name (string replace -a '.' '_' "$project_name")
+
+        # Create session in background if it does not already exist
+        if not tmux has-session -t "$session_name" 2>/dev/null
+            tmux new-session -d -s "$session_name" -c "$project_path"
+        end
+
+        # Handle attachment based on the execution environment
+        if test -t 0
+            # Running inside an interactive terminal (Ghostty, Kitty, etc.)
+            if test -n "$TMUX"
+                tmux switch-client -t "$session_name"
+            else
+                tmux attach-session -t "$session_name"
+            end
+        else
+            # Running headless / outside a terminal (e.g. skhd global hotkey).
+            # IMPORTANT: We must check for actual client output, not just exit code.
+            # After `tmux new-session -d` the server is running so list-clients
+            # exits 0 even when nobody is visually attached to a window.
+            if tmux list-clients 2>/dev/null | grep -q .
+                # A real terminal (Ghostty) is attached to tmux; switch it there.
+                tmux switch-client -t "$session_name"
+                osascript -e 'tell application "Ghostty" to activate'
+            else
+                # No terminal is attached to tmux, or Ghostty is closed entirely.
+                # AppleScript handles both cases: it launches Ghostty if needed
+                # and creates a new window running tmux attach.
+                # (open -a --args is NOT used because macOS ignores CLI flags for GUIs.)
+                osascript -e "tell application \"Ghostty\"
+                    activate
+                    set cfg to new surface configuration
+                    set command of cfg to \"/opt/homebrew/bin/tmux attach-session -t $session_name\"
+                    new window with configuration cfg
+                end tell"
+            end
+        end
     end
 end
 
