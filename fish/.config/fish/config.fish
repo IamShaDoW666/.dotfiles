@@ -182,7 +182,7 @@ end
 function tnewc
     set -l search_dirs ~/Documents/Desk/Apps ~/Documents/Desk/Learn ~/Documents/Desk/others
     set -l all_paths (fd -t d -d 1 . $search_dirs | sed 's#/$##')
-    set -l project_name (printf '%s\n' $all_paths | path basename | choose)
+    set -l project_name (printf '%s\n' $all_paths | path basename | sort -f | choose)
 
     if test -n "$project_name"
         set -l project_path (printf '%s\n' $all_paths | grep -m1 -E "/$project_name\$")
