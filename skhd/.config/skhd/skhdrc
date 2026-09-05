@@ -13,3 +13,5 @@ hyper - f : open -a "Finder"
 
 hyper - e : /opt/homebrew/bin/fish -c "tnewc"
 
+# Open bookmark selector
+hyper - m : /Users/milan/scripts/bookmark.sh

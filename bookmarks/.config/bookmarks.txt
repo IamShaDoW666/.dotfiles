@@ -1,0 +1,4 @@
+GitHub | https://github.com
+C-docs | https://devdocs.io/c/
+Rust-Docs | https://doc.rust-lang.org/stable/std/index.html
+YouTube | https://youtube.com
