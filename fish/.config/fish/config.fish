@@ -234,9 +234,11 @@ function tnewc
                 # replaces fish and causes the window to close when tmux exits).
                 osascript -e "tell application \"Ghostty\"
                     activate
-                    set cfg to new surface configuration
-                    set initial input of cfg to \"tmux attach-session -t $session_name\n\"
-                    new window with configuration cfg
+                    repeat until (exists front window)
+                        delay 0.05
+                    end repeat
+                    set term to focused terminal of selected tab of front window
+                    input text \"tmux attach-session -t $session_name\n\" to term
                 end tell"
             end
         end
