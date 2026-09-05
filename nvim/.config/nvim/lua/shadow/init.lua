@@ -142,7 +142,7 @@ autocmd("LspAttach", {
         -- vim.keymap.set('n', '<leader>wl', function()
         --     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
         -- end, opts)
-        vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, opts)
+        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', '<leader>xq', vim.diagnostic.setloclist, opts)
 
         -- Add border to lsp hover (K)

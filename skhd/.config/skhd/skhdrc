@@ -10,3 +10,6 @@ hyper - w : open -a "WhatsApp"
 
 # System App
 hyper - f : open -a "Finder"
+
+hyper - e : /opt/homebrew/bin/fish -c "tnewc"
+

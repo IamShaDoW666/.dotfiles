@@ -156,13 +156,25 @@ function apps
 end
 
 function tnew
-    set project (fd -t d -d 1 . ~/Documents/Desk/Apps ~/Documents/Desk/Learn ~/Documents/Desk/others | awk -F/ '{print $7}' | fzf)
+    set -l search_dirs ~/Documents/Desk/Apps ~/Documents/Desk/Learn ~/Documents/Desk/others
+    set -l all_paths (fd -t d -d 1 . $search_dirs | sed 's#/$##')
+    set -l project_name (printf '%s\n' $all_paths | path basename | fzf)
 
-    if test -n "$project"
-        if tmux has-session -t "$project" 2>/dev/null
-            tmux attach-session -t "$project"
+    if test -n "$project_name"
+        set -l project_path (printf '%s\n' $all_paths | grep -m1 -E "/$project_name\$")
+        # Replace dots with underscores because tmux parses dots as session:window separators
+        set -l session_name (string replace -a '.' '_' "$project_name")
+
+        if not tmux has-session -t "$session_name" 2>/dev/null
+            if test -n "$TMUX"
+                tmux new-session -d -s "$session_name" -c "$project_path"
+            end
+        end
+
+        if test -n "$TMUX"
+            tmux switch-client -t "$session_name"
         else
-            tmux new-session -s "$project"
+            tmux attach-session -t "$session_name"
         end
     end
 end
@@ -199,15 +211,31 @@ function tnewc
                 # A real terminal (Ghostty) is attached to tmux; switch it there.
                 tmux switch-client -t "$session_name"
                 osascript -e 'tell application "Ghostty" to activate'
+            else if pgrep -q -i ghostty
+                # Ghostty is open with at least one window. Open a new tab in the
+                # front window and type the attach command into the running fish shell.
+                # We use "perform action new_tab" (works in 1.3) + "input text" +
+                # "send key enter" rather than "new tab with configuration" (broken).
+                # Using input text keeps fish alive after tmux exits — the shell is
+                # still running underneath; only the tmux process exited.
+                osascript -e "tell application \"Ghostty\"
+                    activate
+                    set existingTerminal to item 1 of (terminals of front window)
+                    perform action \"new_tab\" on existingTerminal
+                    delay 0.4
+                    set focTerm to focused terminal of (selected tab of front window)
+                    input text \"tmux attach-session -t $session_name\" to focTerm
+                    delay 0.1
+                    send key \"enter\" to focTerm
+                end tell"
             else
-                # No terminal is attached to tmux, or Ghostty is closed entirely.
-                # AppleScript handles both cases: it launches Ghostty if needed
-                # and creates a new window running tmux attach.
-                # (open -a --args is NOT used because macOS ignores CLI flags for GUIs.)
+                # Ghostty is closed entirely. Launch it and open the session using
+                # initial input (types command into fish) rather than command (which
+                # replaces fish and causes the window to close when tmux exits).
                 osascript -e "tell application \"Ghostty\"
                     activate
                     set cfg to new surface configuration
-                    set command of cfg to \"/opt/homebrew/bin/tmux attach-session -t $session_name\"
+                    set initial input of cfg to \"tmux attach-session -t $session_name\n\"
                     new window with configuration cfg
                 end tell"
             end
