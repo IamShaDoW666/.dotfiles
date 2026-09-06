@@ -89,13 +89,13 @@ autocmd("BufReadPost", {
     end,
 })
 
-autocmd("BufWritePre", {
-    group = vim.api.nvim_create_augroup("RustFormat", { clear = true }),
-    buffer = bufnr,
-    callback = function()
-        vim.lsp.buf.format({ bufnr = bufnr })
-    end,
-})
+-- autocmd("BufWritePre", {
+--     group = vim.api.nvim_create_augroup("RustFormat", { clear = true }),
+--     buffer = bufnr,
+--     callback = function()
+--         vim.lsp.buf.format({ bufnr = bufnr })
+--     end,
+-- })
 
 autocmd("LspAttach", {
     group = ShadowGroup,

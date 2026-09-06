@@ -13,5 +13,23 @@ hyper - f : open -a "Finder"
 
 hyper - e : /opt/homebrew/bin/fish -c "tnewc"
 
-# Open bookmark selector
-hyper - m : /Users/milan/scripts/bookmark.sh
+# Open password selector
+hyper - p : /Users/milan/scripts/passmenu.sh
+
+# -------------------------------------------------------------------
+# Bookmark Modes (Chords)
+# -------------------------------------------------------------------
+:: bm_mode
+
+# Enter 'bm_mode' with Hyper + H
+hyper - h ; bm_mode
+
+# Press 'a' to add a bookmark and return to default mode
+bm_mode < a : /Users/milan/scripts/add-bookmark.sh; skhd -k "escape"
+
+# Press 'h' to open bookmarks and return to default mode
+bm_mode < h : /Users/milan/scripts/bookmark.sh; skhd -k "escape"
+
+# Press Escape or Space to exit mode
+bm_mode < escape ; default
+bm_mode < space ; default

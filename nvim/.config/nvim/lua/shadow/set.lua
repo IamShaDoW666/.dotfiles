@@ -34,3 +34,11 @@ vim.diagnostic.config({
 })
 
 require('vim._core.ui2').enable()
+
+-- Disable built-in regex-based LaTeX syntax & ftplugin
+vim.g.loaded_syntax = 1
+vim.g.loaded_matchit = 1
+
+-- Enable conceallevel in .tex buffers
+vim.opt.conceallevel = 1
+vim.g.tex_conceal = "abdmg"

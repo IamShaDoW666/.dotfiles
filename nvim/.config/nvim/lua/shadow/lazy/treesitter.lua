@@ -9,7 +9,12 @@ return {
         "nvim-treesitter/nvim-treesitter-textobjects",
     },
     config = function()
-        require("nvim-treesitter").setup({})
+        require("nvim-treesitter").setup({
+            highlight = {
+                enable = true,
+                disable = { "rust", "tex" }, -- Disable treesitter for rust and tex
+            },
+        })
 
         local parsers = {
             "vimdoc",
@@ -30,9 +35,9 @@ return {
         vim.api.nvim_create_autocmd("FileType", {
             callback = function(args)
                 -- Disable treesitter for rust if desired
-                -- if vim.bo[args.buf].filetype == "rust" then
-                --     return
-                -- end
+                if vim.bo[args.buf].filetype == "rust" then
+                    return
+                end
 
                 -- Try starting treesitter; if the parser isn't ready yet,
                 -- it won't crash your editor.
