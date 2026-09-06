@@ -249,6 +249,22 @@ function sudolast
     sudo (history --max=1)
 end
 
+function dbm --description "Delete bookmark"
+    set bookmark_file /Users/milan/.config/bookmarks.txt
+    set -l bookmark (cat $bookmark_file | fzf --prompt="Select a bookmark to delete: ")
+    if test -n "$bookmark"
+        set -l bookmark_name (echo $bookmark | awk '{print $1}')
+        set -l confirm (read -P "Are you sure you want to delete the bookmark '$bookmark_name'? (y/n): ")
+        if test "$confirm" = "y"
+            rg -v $bookmark $bookmark_file > $bookmark_file.tmp
+            mv $bookmark_file.tmp $bookmark_file
+            echo "Deleted bookmark '$bookmark_name' ($bookmark_path)"
+        else
+            echo "Aborted deletion of bookmark '$bookmark_name' ($bookmark_path)"
+        end
+    end
+end
+
 bind \cr _atuin_bind_up
 bind -M insert \cr _atuin_bind_up
 
