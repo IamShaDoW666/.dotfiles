@@ -1,14 +1,26 @@
 #!/bin/bash
 
-# Display macOS native input dialog using osascript
+# Display macOS native input dialog using osascript.
+# Automatically populates the input field with clipboard content if available,
+# and configures 'cancel button "Cancel"' so pressing Escape dismisses the prompt cleanly.
 INPUT=$(osascript -e '
 tell application "System Events"
     activate
-    set userInput to display dialog "Enter bookmark in format:\nTitle | URL" default answer "My Website | https://example.com" with title "Add Bookmark" buttons {"Cancel", "Add Bookmark"} default button "Add Bookmark"
+    try
+        set clipText to (the clipboard as text)
+    on error
+        set clipText to ""
+    end try
+    if clipText is "" then
+        set defaultText to "My Website | https://example.com"
+    else
+        set defaultText to clipText
+    end if
+    set userInput to display dialog "Enter bookmark in format:\nTitle | URL" default answer defaultText with title "Add Bookmark" buttons {"Cancel", "Add Bookmark"} default button "Add Bookmark" cancel button "Cancel"
     return text returned of userInput
 end tell' 2>/dev/null)
 
-# Exit cleanly if user clicked Cancel or submitted empty input
+# Exit cleanly if user clicked Cancel, pressed Escape, or submitted empty input
 if [ -z "$INPUT" ]; then
     exit 0
 fi

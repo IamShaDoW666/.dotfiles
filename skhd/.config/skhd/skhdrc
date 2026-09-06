@@ -1,3 +1,11 @@
+.device internal {
+  vendor:  0x0000,
+  product: 0x0000,
+}
+
+.remap rcmd [device internal] : return
+.remap ralt [device internal] : backspace
+
 # Browsers
 hyper - b : open -na "Google Chrome"
 
@@ -25,10 +33,10 @@ hyper - p : /Users/milan/scripts/passmenu.sh
 hyper - h ; bm_mode
 
 # Press 'a' to add a bookmark and return to default mode
-bm_mode < a : /Users/milan/scripts/add-bookmark.sh; skhd -k "escape"
+bm_mode < a : skhd -k "escape"; /Users/milan/scripts/add-bookmark.sh
 
 # Press 'h' to open bookmarks and return to default mode
-bm_mode < h : /Users/milan/scripts/bookmark.sh; skhd -k "escape"
+bm_mode < h : skhd -k "escape"; /Users/milan/scripts/bookmark.sh
 
 # Press Escape or Space to exit mode
 bm_mode < escape ; default
